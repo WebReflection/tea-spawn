@@ -1,0 +1,22 @@
+{
+  "version": "0.0.0",
+  "name": "tea-spawn",
+  "description": "",
+  "homepage": "https://github.com/WebReflection/tea-spawn",
+  "keywords": [],
+  "author": {
+    "name": "",
+    "web": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/WebReflection/tea-spawn.git"
+  },
+  "main": "./build/tea-spawn.node.js",
+  "scripts": {
+    "test": "node test/.test.js"
+  },
+  "dependencies": {
+    "wru": ">= 0.0.0"
+  }
+}
