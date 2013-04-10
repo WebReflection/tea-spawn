@@ -18,11 +18,11 @@ AMD = $(VAR)
 # default build task
 build:
 	make clean
-	make var
+#	make var
 	make node
-	make amd
+#	make amd
 	make test
-#	make hint
+	make hint
 	make size
 
 # build generic version
@@ -51,12 +51,12 @@ amd:
 	rm build/no-copy.$(REPO).amd.js
 
 size:
-	wc -c build/$(REPO).max.js
-	gzip -c build/$(REPO).js | wc -c
+	wc -c build/$(REPO).node.js
+	gzip -c build/$(REPO).node.js | wc -c
 
 # hint built file
 hint:
-	node node_modules/jshint/bin/jshint build/$(REPO).max.js
+	node node_modules/jshint/bin/jshint build/$(REPO).node.js
 
 # clean/remove build folder
 clean:
@@ -107,3 +107,4 @@ dependencies:
 	npm install uglify-js@1
 	npm install jshint
 	npm install markdown
+	npm install redefine

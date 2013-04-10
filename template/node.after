@@ -1,1 +1,5 @@
-;
+
+// require('tea-spawn');
+// same as
+// require('tea-spawn').TeaSpawn
+module.exports = TeaSpawn.TeaSpawn = TeaSpawn;
