@@ -10,6 +10,8 @@ The easiest way to spawn a process and read its outcome.
 
 ### How
 
+The classic `npm install tea-spawn` will do the magic, an optional `-g` is suggested to reuse anytime the library.
+
 ```javascript
 var TeaSpawn = require('tea-spawn.js');
 
