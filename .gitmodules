@@ -1,0 +1,3 @@
+[submodule "git_modules/redefine"]
+	path = git_modules/redefine
+	url = git@github.com:WebReflection/redefine.git
