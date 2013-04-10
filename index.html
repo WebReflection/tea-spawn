@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>TeaSpawn by WebReflection</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>TeaSpawn</h1>
+        <p>Take a sip of everything you need from your OS mug</p>
+
+        <p class="view"><a href="https://github.com/WebReflection/tea-spawn">View the Project on GitHub <small>WebReflection/tea-spawn</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/WebReflection/tea-spawn/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/WebReflection/tea-spawn/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/WebReflection/tea-spawn">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>tea-spawn</h1>
+
+<p>Take a sip of everything you need from your OS mug</p>
+
+<p><a href="http://travis-ci.org/WebReflection/tea-spawn"><img src="https://secure.travis-ci.org/WebReflection/tea-spawn.png" alt="build status"></a></p>
+
+<h3>What</h3>
+
+<p>The easiest way to spawn a process and read its outcome.</p>
+
+<h3>How</h3>
+
+<p>The classic <code>npm install tea-spawn</code> will do the magic, an optional <code>-g</code> is suggested to reuse anytime the library.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">TeaSpawn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'tea-spawn.js'</span><span class="p">);</span>
+
+<span class="c1">// python as runtime interpreter</span>
+<span class="kd">var</span> <span class="nx">python</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TeaSpawn</span><span class="p">(</span><span class="s1">'python'</span><span class="p">);</span>
+<span class="nx">python</span>
+  <span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">'print("Hello World")'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">output</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">output</span><span class="p">);</span> <span class="c1">// Hello World</span>
+   <span class="p">})</span>
+  <span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">'print(123)'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">output</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">output</span><span class="p">);</span> <span class="c1">// 123</span>
+  <span class="p">})</span>
+<span class="p">;</span>
+
+<span class="c1">// python file</span>
+<span class="kd">var</span> <span class="nx">python</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TeaSpawn</span><span class="p">(</span><span class="s1">'python'</span><span class="p">,</span> <span class="s1">'test/test.py'</span><span class="p">);</span>
+<span class="nx">python</span><span class="p">.</span><span class="nx">send</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">output</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">output</span><span class="p">);</span> <span class="c1">// 1\n2\n3</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>In latter example the second argument is used as partial application.
+This means that every <code>python.send([arg0, arg1, argN])</code> will be concatenated to the list of arguments producing this call <code>python test/test.py arg0 arg1 argN</code> with proper shell arguments escape provided by <code>spawn</code> module.</p>
+
+<h3>API</h3>
+
+<ul>
+<li><p><code>TeaSpawn(executable:string[, argument:string|arguments:Array[, env:Object]])</code>
+The second argument can be either a string or an array with 0, one, or more entries and will be used as partial arguments per each call to the send method.</p></li>
+<li><p><code>TeaSpawn#send(null|content:string|arguments:Array[, callback:Function]):object</code>
+every call to this method will create <em>a new spawned process</em> with the same initial configuration.
+If the first argument is <code>null</code> the process will be executed as it is.
+If the first argument is <code>string</code> it will be written in the spawned process stdin.
+If the first argument is a <code>Array</code> it will be used as extra arguments and no content will be written to the stdin.
+The second optional argument, if present, will receive <code>error</code> and <code>output</code> parameters. Error is either a buffered error or the process exit number. If <code>0</code> means everything was fine. <code>output</code> is the content produced by that call or <code>null</code> if none.
+The method returns the instance object itself.</p></li>
+<li><p><code>TeaSpawn#kill(void):object</code>
+It kills every process previously started with <code>.send()</code> and returns the instance object.</p></li>
+<li><p><code>TeaSpawn#log(error:Number|StringBuffer, output:null|StringBuffer):object</code>
+This is simply an utility method handy for runtime operations such <code>p.send(someArg, p.log)</code>.
+It will log the error or the output as they come, that's pretty much it.</p></li>
+</ul><h3>More Examples</h3>
+
+<div class="highlight"><pre><span class="c1">// curl (grab a page output)</span>
+<span class="kd">var</span> <span class="nx">curl</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TeaSpawn</span><span class="p">(</span>
+  <span class="s1">'curl'</span><span class="p">,</span>
+  <span class="p">[</span><span class="s1">'-L'</span><span class="p">,</span> <span class="s1">'-s'</span><span class="p">]</span> <span class="c1">// arguments used per each .send() call</span>
+<span class="p">);</span>
+
+<span class="c1">// call send with extra arguments</span>
+<span class="nx">curl</span><span class="p">.</span><span class="nx">send</span><span class="p">([</span><span class="s1">'http://www.google.com'</span><span class="p">],</span> <span class="nx">curl</span><span class="p">.</span><span class="nx">log</span><span class="p">);</span>
+<span class="nx">curl</span><span class="p">.</span><span class="nx">send</span><span class="p">([</span><span class="s1">'http://www.3site.eu'</span><span class="p">],</span> <span class="nx">curl</span><span class="p">.</span><span class="nx">log</span><span class="p">);</span>
+
+
+<span class="c1">// detailed list of files</span>
+<span class="kd">var</span> <span class="nx">ls</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TeaSpawn</span><span class="p">(</span><span class="s1">'ls'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'-la'</span><span class="p">]);</span>
+<span class="nx">ls</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s1">'./'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">out</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="nx">out</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/\r\n|\r|\n/</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">rowToObject</span><span class="p">,</span> <span class="nx">result</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="kd">function</span> <span class="nx">rowToObject</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">cols</span> <span class="o">=</span> <span class="nx">row</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/ +/</span><span class="p">);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span>    <span class="p">{</span>
+    <span class="nx">permissions</span><span class="o">:</span> <span class="nx">cols</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span>
+    <span class="nx">links</span><span class="o">:</span> <span class="nx">cols</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span>
+    <span class="nx">owner</span><span class="o">:</span> <span class="nx">cols</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span>
+    <span class="nx">group</span><span class="o">:</span> <span class="nx">cols</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span>
+    <span class="nx">size</span><span class="o">:</span> <span class="nx">cols</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span>
+    <span class="nx">name</span><span class="o">:</span> <span class="nx">cols</span><span class="p">.</span><span class="nx">pop</span><span class="p">(),</span>
+    <span class="nx">mdate</span><span class="o">:</span> <span class="nx">cols</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<h3>Why</h3>
+
+<p>Sometimes there's no module to do what you need to ... spawn could become really handy as utility/tool for any task you might need.</p>
+
+<p>It is also possible to make interoperation easy between programming languages such Python or Java, having stateless programs that can do something per each call without needing a full duplex channel, just the standard output.</p>
+
+<p>As summary, if performance is not such big concern keep it simple and go for it!</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/WebReflection">WebReflection</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
